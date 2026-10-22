@@ -34,12 +34,6 @@ The application uses a full-stack architecture consisting of an Angular frontend
 - **Database:** Stores experiment-related information and associated test data.
 - **Hardware Integration:** Planned Arduino USB integration will enable the application to receive pH measurements directly from the meter.
 
-## Getting Started
-
-### Prerequisites
-
-The following software is required to run the application:
-
 ### Installation
 
 Clone the repository:
@@ -50,6 +44,11 @@ cd <repository-directory>
 ```
 
 The frontend was generated with Angular CLI version 17.3.17.
+
+```bash
+npm install -g @angular/cli@17.3.17
+```
+
 #### To run the angular app, enter these into a new terminal
 
 ```bash
