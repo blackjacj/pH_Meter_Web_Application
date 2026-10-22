@@ -12,7 +12,7 @@ This project is an independently developed full-stack application designed to al
 The goal is to all up to 12 pH meters to be displayed on the page at once, updating in real time. Currently, the page is setup to display 2 graphs only, but more will be added soon! 
 
 ## Demo
-<img width="500" height="282" alt="Adobe Express - pH-Meter-Demo-1" src="https://github.com/user-attachments/assets/687c238c-582a-4333-94ef-d07232abd673" />
+[Demo Video](./Screenshots/pH-Meter-Demo-1.gif)
 
 
 
