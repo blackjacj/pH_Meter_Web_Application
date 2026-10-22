@@ -1,0 +1,14 @@
+$kind: http-request
+description: ""
+url: http://127.0.0.1:5000/test
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"test_name\": \"test 1\",\r
+
+    \  \"note\": \"first test\"\r
+
+    }"
+order: 1000

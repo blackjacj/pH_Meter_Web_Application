@@ -1,0 +1,25 @@
+.horizontal-graphs {
+    display: flex;
+}
+
+.all-graphs {
+    flex: 1;
+}
+
+.page {
+    display: flex;
+}
+
+.horizontal-graphs app-graph {
+    flex: 1;
+    min-width: 0;
+}
+
+.side-panel {
+    width: 25vw;
+    background-color: #e1eaf3;
+    box-shadow:
+        0 10px 15px -3px rgba(15, 23, 42, 0.08),
+        0 4px 6px -4px rgba(15, 23, 42, 0.08);
+    margin: 10px;
+}

@@ -1,0 +1,8 @@
+$kind: http-request
+description: ""
+url: http://127.0.0.1:5000/test/aef8f8daea164148abad27c4205d52cc
+method: DELETE
+body:
+  type: json
+  content: ""
+order: 4000

@@ -1,0 +1,16 @@
+$kind: http-request
+description: ""
+url: http://127.0.0.1:5000/reading
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"pH_value\": 7,\r
+
+    \  \"time\": 0,\r
+
+    \  \"test_id\": \"962b067c058243f7b3fe6f2ac64fc42a\"\r
+
+    }"
+order: 2000

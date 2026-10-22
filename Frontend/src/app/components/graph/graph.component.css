@@ -1,0 +1,12 @@
+* {
+    background-color: #e1eaf3;
+    box-shadow:
+        0 10px 15px -3px rgba(15, 23, 42, 0.08),
+        0 4px 6px -4px rgba(15, 23, 42, 0.08);
+}
+
+.chart-box {
+    height: 90vh;
+    width: 36vw;
+    margin: 10px;
+}
