@@ -40,35 +40,22 @@ The application uses a full-stack architecture consisting of an Angular frontend
 
 The following software is required to run the application:
 
-- Node.js and npm
-- Python
-- MySQL Server
-- Git
-
 ### Installation
 
 Clone the repository:
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/blackjacj/pH_Meter_Web_Application.git
 cd <repository-directory>
 ```
 
-#### Backend Setup
+The frontend was generated with Angular CLI version 17.3.17.
+#### To run the angular app, enter these into a new terminal
 
-1. Navigate to the backend directory.
-2. Create and activate a Python virtual environment.
-3. Install the project's Python dependencies.
-4. Configure the database connection and required environment variables.
-5. Start the Flask development server.
-
-#### Frontend Setup
-
-1. Navigate to the Angular frontend directory.
-2. Install the project dependencies.
-3. Start the Angular development server.
-
-> See the project configuration files for the exact commands and required environment variables.
+```bash
+cd Frontend
+ng serve --open
+```
 
 ## Development Status
 
