@@ -68,5 +68,5 @@ This project is actively being developed. Current and planned work includes:
 
 **Jake Black**
 
-- GitHub: https://github.com/blackjacj
-- LinkedIn: www.linkedin.com/in/blackjacj
+- GitHub: [blackjacj](https://github.com/blackjacj)
+- LinkedIn: [Jake Black](https://www.linkedin.com/in/blackjacj/)
