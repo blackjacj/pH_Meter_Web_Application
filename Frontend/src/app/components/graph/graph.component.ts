@@ -66,6 +66,7 @@ export class GraphComponent implements OnInit, OnDestroy {
           return;
         }
 
+        // GENERATES A RANDOM PH READING FOR TESTING
         const ph = 7 + (Math.random() - 0.5) * 2; // around 6 to 8
 
         // ADDS 1 SECOND AND PUSHES 1 PH AMOUNT PER INTERVAL
