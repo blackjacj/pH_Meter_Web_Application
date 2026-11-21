@@ -6,9 +6,9 @@ body:
   type: json
   content: "{\r
 
-    \  \"test_name\": \"test 1\",\r
+    \    \"name\": \"test 1\",\r
 
-    \  \"note\": \"first test\"\r
+    \    \"note\": \"first test\"\r
 
     }"
 order: 1000

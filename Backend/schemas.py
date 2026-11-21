@@ -1,15 +1,14 @@
 from marshmallow import Schema, fields, validate
 
 class PlainReadingSchema(Schema):
-    id = fields.Int(dump_only=True)
     meter = fields.Int(required=True, validate=validate.OneOf([1, 2]))
-    time = fields.Int(required=True)
+    time = fields.Int(required=True, validate=validate.Range(min=0))
     ph_value = fields.Float(required=True, validate=validate.Range(min=0, max=14))
 
 class PlainTestSchema(Schema):
     id = fields.Int(dump_only=True)
-    name = fields.Str(required=True, validate=validate.Length(max=80))
-    note = fields.Str(validate=validate.Length(max=500))
+    name = fields.Str(required=True, validate=validate.Length(min=1, max=80))
+    note = fields.Str(allow_none=True, validate=validate.Length(max=500))
     date = fields.DateTime(dump_only=True)
 
 class TestUpdateSchema(Schema):
@@ -26,4 +25,4 @@ class TestSchema(PlainTestSchema):
 class UserSchema(Schema):
     id = fields.Int(dump_only=True)
     username = fields.Str(required=True, validate=validate.Length(min=3, max=30))
-    password = fields.Str(required=True, load_only=True)
+    password = fields.Str(required=True, load_only=True, validate=validate.Length(min=8))

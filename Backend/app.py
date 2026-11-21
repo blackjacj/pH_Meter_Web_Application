@@ -1,93 +1,34 @@
-import uuid
-from flask import Flask, request
-from flask_cors import CORS
+import os
+
+from flask import Flask
+from flask_smorest import Api
+
 from db import db
 import models
-from Backend.db import tests, readings
-from flask_smorest import abort
 
+from resources.reading import blp as ReadingBlueprint
+from resources.test import blp as TestBlueprint
 
-app = Flask(__name__)
-CORS(app)
+def create_app(db_url=None):
+    app = Flask(__name__)
 
-#GETS ALL TESTS
-@app.get('/test')
-def get_tests():
-    return {"Tests": list(tests.values())}
+    app.config["PROPAGATE_EXCEPTIONS"] = True
+    app.config["API_TITLE"] = "Stores REST API"
+    app.config["API_VERSION"] = "v1"
+    app.config["OPENAPI_VERSION"] = "3.0.3"
+    app.config["OPENAPI_URL_PREFIX"] = "/"
+    app.config["OPENAPI_SWAGGER_UI_PATH"] = "/swagger-ui"
+    app.config["OPENAPI_SWAGGER_UI_URL"] = "https://cdn.jsdelivr.net/npm/swagger-ui-dist/"
+    app.config["SQLALCHEMY_DATABASE_URI"] = db_url or os.getenv("DATABASE_URL", "sqlite:///data.db")
+    app.config["SQLALCHEMY_TRACK_MODIFICATION"] = False
+    db.init_app(app)
 
-#CREATES A NEW TEST
-@app.post('/test')
-def create_test():
-    test_data = request.get_json()
-    if "test_name" not in test_data:
-        abort(
-            400,
-            message="Bad request. Ensure 'test_name' is included in the JSON payload.",
-        )
+    api = Api(app)
 
-    for test in tests.values():
-        if test_data["test_name"] == test["test_name"]:
-            abort(400, message=f"Test already exists.")
-    test_id = uuid.uuid4().hex
-    test = {**test_data, "id": test_id}
-    tests[test_id] = test
-    return test, 201
+    with app.app_context():
+        db.create_all()
 
-#DELETES A TEST
-@app.delete("/test/<string:test_id>")
-def delete_test(test_id):
-    try:
-        del tests[test_id]
-        return {"message": "Test deleted."}
-    except KeyError:
-        abort(404, message="Test not found.")
+    api.register_blueprint(ReadingBlueprint)
+    api.register_blueprint(TestBlueprint)
 
-#GETS A SPECIFIC TEST
-@app.get("/test/<string:test_id>")
-def get_test(test_id):
-    try:
-        return tests[test_id]
-    except KeyError:
-        return abort(404, message="Test not found")
-
-#EDITS A TEST
-@app.put("/test/<string:test_id>")
-def update_test(test_id):
-    test_data = request.get_json()
-    if "test_name" not in test_data or "note" not in test_data:
-        abort(400, message="Bad request. Ensure 'test_name', and 'note' are included in the JSON payload.")
-
-    try:
-        test = tests[test_id]
-        test |= test_data
-
-        return test
-    except KeyError:
-        abort(404, message="Test not found.")
-
-#CREATES A NEW READING
-@app.post("/reading")
-def create_reading():
-    reading_data = request.get_json()
-    
-    if reading_data["test_id"] not in tests:
-        return abort(404, message="Test not found")
-
-    reading_id = uuid.uuid4().hex
-    reading = {**reading_data, "id": reading_id}
-    readings[reading_id] = reading
-
-    return reading, 201
-
-#GETS ALL READINGS
-@app.get("/reading")
-def get_all_readings():
-    return {"Readings": list(readings.values())}
-
-#GETS SPECIFIC READING BASED ON ID
-@app.get("/reading/<string:reading_id>")
-def get_reading(reading_id):
-    try:
-        return readings[reading_id]
-    except KeyError:
-        return abort(404, message="Reading not found")
+    return app
