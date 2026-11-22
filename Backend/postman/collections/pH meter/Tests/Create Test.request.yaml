@@ -2,11 +2,13 @@ $kind: http-request
 description: ""
 url: http://127.0.0.1:5000/test
 method: POST
+headers:
+  Authorization: "{{bearer_token_0rv4}}"
 body:
   type: json
   content: "{\r
 
-    \    \"name\": \"test 1\",\r
+    \    \"name\": \"test 2\",\r
 
     \    \"note\": \"first test\"\r
 

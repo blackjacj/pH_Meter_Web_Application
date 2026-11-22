@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get User
+url: http://127.0.0.1:5000/user/1
+method: GET
+order: 2000

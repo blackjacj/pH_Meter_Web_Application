@@ -5,5 +5,5 @@ class UserModel(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(30), unique=True ,nullable=False)
-    password_hash = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
     tests = db.relationship("TestModel", back_populates="user", lazy="dynamic")

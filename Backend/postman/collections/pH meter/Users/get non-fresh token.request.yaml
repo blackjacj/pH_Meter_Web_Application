@@ -1,0 +1,6 @@
+$kind: http-request
+url: http://127.0.0.1:5000/refresh
+method: POST
+headers:
+  Authorization: "{{bearer_token_0y9l}}"
+order: 6000

@@ -1,7 +1,6 @@
-import uuid
-from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from db import db
@@ -11,12 +10,14 @@ from schemas import TestSchema, PlainTestSchema, TestUpdateSchema
 blp = Blueprint("tests", __name__, description="Operations on tests")
 
 
-@blp.route("/test/<string:test_id>")
+@blp.route("/test/<int:test_id>")
 class Test(MethodView):
     @blp.response(200, TestSchema)
+    @jwt_required()
     def get(self, test_id):
         return TestModel.query.get_or_404(test_id)
 
+    @jwt_required()
     @blp.arguments(TestUpdateSchema)
     @blp.response(200, PlainTestSchema)
     def put(self, test_data, test_id):
@@ -26,6 +27,7 @@ class Test(MethodView):
         db.session.commit()
         return test
 
+    @jwt_required()
     def delete(self, test_id):
         test = TestModel.query.get_or_404(test_id)
         db.session.delete(test)
@@ -34,10 +36,12 @@ class Test(MethodView):
 
 @blp.route("/test")
 class TestList(MethodView):
+    @jwt_required()
     @blp.response(200, TestSchema(many=True))
     def get(self):
         return TestModel.query.all()
 
+    @jwt_required()
     @blp.arguments(TestSchema)
     @blp.response(200, TestSchema)
     def post(self, test_data):

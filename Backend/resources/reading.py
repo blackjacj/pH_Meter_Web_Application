@@ -1,7 +1,7 @@
-import uuid
 from flask import request
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
+from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from db import db
@@ -12,6 +12,7 @@ blp = Blueprint("readings", __name__, description="Operations on readings")
 
 @blp.route("/test/<int:test_id>/readings")
 class TestReadings(MethodView):
+    @jwt_required()
     @blp.response(200, PlainReadingSchema(many=True))
     def get(self, test_id):
         if db.session.get(TestModel, test_id) is None:
@@ -31,10 +32,12 @@ class TestReadings(MethodView):
 
 @blp.route("/reading")
 class ReadingList(MethodView):
+    @jwt_required()
     @blp.response(200, ReadingSchema(many=True))
     def get(self):
         return ReadingModel.query.all()
 
+    @jwt_required()
     @blp.arguments(ReadingSchema)
     @blp.response(201, ReadingSchema)
     def post(self, reading_data):
