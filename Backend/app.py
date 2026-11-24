@@ -82,7 +82,7 @@ def create_app(db_url=None):
             jsonify(
                 {
                     "description": "Request does not contain access token.",
-                    "error": "authorizaion_required",
+                    "error": "authorization_required",
                 }
             ),
             401,

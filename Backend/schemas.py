@@ -4,6 +4,7 @@ class PlainReadingSchema(Schema):
     meter = fields.Int(required=True, validate=validate.OneOf([1, 2]))
     time = fields.Int(required=True, validate=validate.Range(min=0))
     ph_value = fields.Float(required=True, validate=validate.Range(min=0, max=14))
+    voltage = fields.Float(required=True, validate=validate.Range(min=0))
 
 class PlainTestSchema(Schema):
     id = fields.Int(dump_only=True)

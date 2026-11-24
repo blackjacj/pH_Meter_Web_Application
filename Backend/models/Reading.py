@@ -8,5 +8,6 @@ class ReadingModel(db.Model):
     meter = db.Column(db.Integer, nullable=False)
     time = db.Column(db.Integer, nullable=False)
     ph_value = db.Column(db.Float, nullable=False)
+    voltage = db.Column(db.Float, nullable=False)
     test_id = db.Column(db.Integer, db.ForeignKey("tests.id"), nullable=False)
     test = db.relationship("TestModel", back_populates="readings")
