@@ -1,0 +1,25 @@
+<main class="tests-page">
+  <h1>My Experiments</h1>
+
+  @if (loading) {
+    <p>Loading...</p>
+  }
+
+  @if (error) {
+    <p class="message error">{{ error }}</p>
+  }
+
+  <section class="test-list">
+    @for (test of tests; track test.id) {
+      <article [routerLink]="['/test-detail', test.id]", class="test-card">
+        <h2>{{ test.name }}</h2>
+        <p class="note">{{ test.note || 'No note' }}</p>
+        <small>{{ test.date | date: 'medium' }}</small>
+      </article>
+    } @empty {
+      @if (!loading && !error) {
+        <p>You have no tests yet.</p>
+      }
+    }
+  </section>
+</main>

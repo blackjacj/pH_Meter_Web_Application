@@ -10,7 +10,7 @@ class PlainTestSchema(Schema):
     id = fields.Int(dump_only=True)
     name = fields.Str(required=True, validate=validate.Length(min=1, max=80))
     note = fields.Str(allow_none=True, validate=validate.Length(max=500))
-    date = fields.DateTime(dump_only=True)
+    date = fields.DateTime(dump_only=True, format="%Y-%m-%dT%H:%M:%SZ")
 
 class TestUpdateSchema(Schema):
     name = fields.Str(validate=validate.Length(min=1, max=80))

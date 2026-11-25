@@ -29,4 +29,18 @@ export const routes: Routes = [
             return import('./register/register.component').then((m) => m.RegisterComponent)
         },
     },
+    {
+        path: 'tests',
+        pathMatch: 'full',
+        loadComponent: () => {
+            return import('./tests/tests.component').then((m) => m.TestsComponent)
+        },
+    },
+    {
+        path: 'test-detail/:id',
+        pathMatch: 'full',
+        loadComponent: () => {
+            return import('./test-detail/test-detail.component').then((m) => m.TestDetailComponent)
+        },
+    },
 ];

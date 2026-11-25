@@ -55,6 +55,5 @@ export class RegisterComponent {
         this.loading = false;
       }
     })
-
   }
 }
