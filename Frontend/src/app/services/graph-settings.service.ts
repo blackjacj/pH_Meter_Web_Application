@@ -10,5 +10,6 @@ export class GraphSettingsService {
   startButtonPressed = false;
   stopButtonPressed = false;
   resetSignal = new Subject<void>();
-  testId = null;
+  testId: number | null = null;
+  port = 'COM3';
 }

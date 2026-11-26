@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { GraphSettingsService } from '../../services/graph-settings.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+import { ReadingsService } from '../../services/readings.service';
 
 @Component({
   selector: 'app-side-panel',
@@ -13,6 +14,8 @@ import { HttpClient } from '@angular/common/http';
 export class SidePanelComponent {
   constructor(public settings: GraphSettingsService) { }
   private http = inject(HttpClient);
+  private readingsService = inject(ReadingsService);
+  private api = 'http://127.0.0.1:5000';
 
   graph_seconds: number = 20;
   seconds: number = 60;
@@ -40,38 +43,60 @@ export class SidePanelComponent {
     }
 
     this.error = '';
-    this.http.post<any>('http://127.0.0.1:5000/test', {
+    this.http.post<any>(`${this.api}/test`, {
       name: this.testName.trim(),
       note: this.testNote
     }).subscribe({
-      next: (res) => {
-        this.settings.testId = res.id;
-        this.settings.startButtonPressed = true;
-        this.settings.stopButtonPressed = false;
-      },
-      error: (err) => {
-        this.error = err.error?.message || 'Coult not create the test.'
-      }
+      next: (res) => this.startReading(res.id),
+      error: (err) => this.error = err.error?.message || 'Could not create the test.'
     });
   }
 
-  stop_pressed = true;
-  pressStop() {
-    if (!this.settings.startButtonPressed) return;
-    
-    this.settings.startButtonPressed = false;
-    this.settings.stopButtonPressed = true;
+  private startReading(id: number) {
+  this.http.post(`${this.api}/test/${id}/start`, {
+    port: this.settings.port,
+    seconds: this.settings.testSeconds
+  }).subscribe({
+    next: () => {
+      this.settings.testId = id;
+      this.settings.startButtonPressed = true;
+      this.settings.stopButtonPressed = false;
+      this.readingsService.start(id);
+    },
+    error: (err) => this.error = err.error?.message || 'Could not start the test.'
+  });
+}
 
-    const id = this.settings.testId;
-    if (id !== null && confirm('Test complete. Download a CSV file?')) {
-      this.downloadCsv(id, () => this.finish());
-    } else {
-      this.finish()
-    }
+
+  pressStop() {
+  if (!this.settings.startButtonPressed) return;
+
+  const id = this.settings.testId;
+  this.settings.startButtonPressed = false;
+  this.settings.stopButtonPressed = true;
+  this.readingsService.stop();
+
+  if (id === null) {
+    this.finish();
+    return;
   }
 
+  const askAboutCsv = () => {
+    if (confirm('Test complete. Download a CSV file?')) {
+      this.downloadCsv(id, () => this.finish());
+    } else {
+      this.finish();
+    }
+  };
+
+  this.http.post(`${this.api}/test/${id}/stop`, {}).subscribe({
+    next: askAboutCsv,
+    error: askAboutCsv
+  });
+}
+
   private downloadCsv(id: number, done: () => void) {
-    this.http.get(`http://127.0.0.1:5000/test/${id}/export`, { responseType: 'blob'}).subscribe({
+    this.http.get(`${this.api}/test/${id}/export`, { responseType: 'blob' }).subscribe({
       next: (blob) => {
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);

@@ -12,3 +12,6 @@ variables:
   - key: bearer_token_0jjs
     secret: true
     disabled: false
+  - key: bearer_token_0qkh
+    secret: true
+    disabled: false

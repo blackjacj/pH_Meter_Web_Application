@@ -82,15 +82,38 @@ class TestExport(MethodView):
         if test is None or test.user_id != int(get_jwt_identity()):
             abort(404, message="Test not found.")
 
-        out = io.StringIO()
-        writer = csv.writer(out)
-        writer.writerow(["time", "meter", "ph_value", "voltage"])
-
         readings = (ReadingModel.query
                     .filter_by(test_id=test_id)
                     .order_by(ReadingModel.time, ReadingModel.meter)
                     .all())
+
+        # COLLECTS EACH USED METER NUMBER IN A SET
+        # SORTS THEM IN ORDER
+        active = sorted({r.meter for r in readings})
+
+        # GROUPS THE READINGS BY SECOND
+        by_time = {}
         for r in readings:
-            writer.writerow([r.time, r.meter, r.ph_value, r.voltage])
+            by_time.setdefault(r.time, {})[r.meter] = (r.ph_value, r.voltage)
+
+        out = io.StringIO()
+        writer = csv.writer(out)
+
+        # BUILDS THE HEADER FOR THE CSV
+        # TIME FIRST, THEN LOOPS THROUGH EACH ACTIVE METER, GIVING EACH TWO COLUMNS
+        header = ["time"]
+        for m in active:
+            header += [f"meter{m}_ph", f"meter{m}_voltage"]
+        writer.writerow(header)
+
+        # OUTER LOOP = ONE SECOND
+        # INNER LOOP = EACH ACTIVE METER, ADDS ITS PH AND VOLTAGE
+        for t in sorted(by_time):
+            row = [t]
+            for m in active:
+                # by_time[t].get(m, ("", "") IF THE METER HAS NO READING THIS SECOND, USES BLANKS
+                ph, voltage = by_time[t].get(m, ("", ""))
+                row += [ph, voltage]
+            writer.writerow(row)
 
         return Response(out.getvalue(), mimetype="text/csv")

@@ -1,7 +1,7 @@
 from marshmallow import Schema, fields, validate
 
 class PlainReadingSchema(Schema):
-    meter = fields.Int(required=True, validate=validate.OneOf([1, 2]))
+    meter = fields.Int(required=True, validate=validate.Range(min=1, max=12))
     time = fields.Int(required=True, validate=validate.Range(min=0))
     ph_value = fields.Float(required=True, validate=validate.Range(min=0, max=14))
     voltage = fields.Float(required=True, validate=validate.Range(min=0))

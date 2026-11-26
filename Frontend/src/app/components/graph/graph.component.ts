@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, inject } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration } from 'chart.js';
-import { Chart, registerables } from 'chart.js';
-import { GraphSettingsService } from '../../services/graph-settings.service';
+import { ChartConfiguration, Chart, registerables } from 'chart.js';
 import { Subscription } from 'rxjs';
+import { GraphSettingsService } from '../../services/graph-settings.service';
+import { ReadingsService, Reading } from '../../services/readings.service';
 
 Chart.register(...registerables);
 
@@ -15,13 +15,17 @@ Chart.register(...registerables);
   styleUrl: './graph.component.css'
 })
 export class GraphComponent implements OnInit, OnDestroy {
+  @Input() meter = 1;
 
-  constructor(private settings: GraphSettingsService) { }
+  private settings = inject(GraphSettingsService);
+  private readingsService = inject(ReadingsService);
+  private subs = new Subscription();
 
-  private timer: any;
+  private phByTime = new Map<number, number>();
+  private latest = 0;
 
   chartData: ChartConfiguration<'line'>['data'] = {
-    labels: [0],
+    labels: [],
     datasets: [
       {
         data: [], label: 'pH', borderColor: '#3b82f6', tension: 0.3, fill: true,
@@ -32,61 +36,70 @@ export class GraphComponent implements OnInit, OnDestroy {
 
   chartOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
+    animation: false,
+    maintainAspectRatio: false,
     scales: {
       y: { min: 0, max: 14, title: { display: true, text: 'pH' } },
       x: { title: { display: true, text: 'seconds' } }
     },
-    maintainAspectRatio: false,
     plugins: {
       title: { display: true, text: 'Live pH Reading' }
     }
   };
 
-  private sub!: Subscription;
+  ngOnInit() {
+    this.chartOptions!.plugins!.title!.text = `Meter ${this.meter}`;
 
-  reset() {
-    this.labelNumber = 0;
+    this.subs.add(
+      this.readingsService.newReadings$.subscribe((batch) => this.addReadings(batch))
+    );
+    this.subs.add(
+      this.settings.resetSignal.subscribe(() => this.reset())
+    );
+  }
+
+  private addReadings(batch: Reading[]) {
+    let changed = false;
+    for (const r of batch) {
+      if (r.meter !== this.meter) continue;     // not mine
+      this.phByTime.set(r.time, r.ph_value);
+      this.latest = Math.max(this.latest, r.time);
+      changed = true;
+    }
+    if (changed) this.redraw();
+  }
+
+  private redraw() {
+    const size = this.settings.maxPoints;
+    const half = Math.floor(size / 2);
+    const start = Math.max(0, this.latest - half);
+
+    const labels: number[] = [];
+    const data: (number | null)[] = [];
+
+    for (let i = 0; i < size; i++) {
+      const second = start + i;
+      labels.push(second);
+      data.push(this.phByTime.get(second) ?? null);
+    }
+
     this.chartData = {
-      labels: [0],
+      labels: labels,
+      datasets: [{ ...this.chartData.datasets[0], data: data }]
+    };
+  }
+
+  private reset() {
+    this.phByTime.clear();
+    this.latest = 0;
+    this.chartData = {
+      labels: [],
       datasets: [{ ...this.chartData.datasets[0], data: [] }]
     };
   }
 
-  private labelNumber = 0;
-
-  ngOnInit() {
-    // CALL RESET FUNCTION WHEN STOP BUTTON IS PUSHED
-    this.sub = this.settings.resetSignal.subscribe(() => this.reset());
-
-    this.timer = setInterval(() => {
-
-      if (this.settings.startButtonPressed) {
-        // STOPS TEST WHEN DESIRED AMOUNT OF SECONDS IS REACHED
-        if (this.labelNumber >= this.settings.testSeconds + 1) {
-          return;
-        }
-
-        // GENERATES A RANDOM PH READING FOR TESTING
-        const ph = 7 + (Math.random() - 0.5) * 2; // around 6 to 8
-
-        // ADDS 1 SECOND AND PUSHES 1 PH AMOUNT PER INTERVAL
-        this.labelNumber += 1
-        this.chartData.labels!.push(this.labelNumber);
-        this.chartData.datasets[0].data.push(Number(ph.toFixed(2)));
-
-        // SHIFTS CHART OVER WHEN THE AMOUNT OF IT REACHES HALF OF THE DISPLAYED SECONDS ON THE GRAPH
-        while (this.chartData.labels!.length > this.settings.maxPoints) {
-          this.chartData.labels!.shift();
-          this.chartData.datasets[0].data.shift();
-        }
-
-        this.chartData = { ...this.chartData }; // redraw
-      }
-    }, 1000);
-  }
-
   ngOnDestroy() {
-    clearInterval(this.timer);
-    this.sub.unsubscribe();
+    this.subs.unsubscribe();
   }
+
 }
