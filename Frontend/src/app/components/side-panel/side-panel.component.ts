@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { GraphSettingsService } from '../../services/graph-settings.service';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -11,11 +11,29 @@ import { ReadingsService } from '../../services/readings.service';
   templateUrl: './side-panel.component.html',
   styleUrl: './side-panel.component.css'
 })
-export class SidePanelComponent {
+export class SidePanelComponent implements OnInit{
   constructor(public settings: GraphSettingsService) { }
   private http = inject(HttpClient);
   private readingsService = inject(ReadingsService);
   private api = 'http://127.0.0.1:5000';
+  ports: { device: string; description: string }[] = [];
+
+  ngOnInit() {
+    this.loadPorts();
+  }
+
+  loadPorts() {
+    this.http.get<any[]>(`${this.api}/ports`).subscribe({
+      next: (list) => {
+        this.ports = list;
+        // pick the first one if nothing is chosen yet
+        if (list.length > 0 && !list.some(p => p.device === this.settings.port)) {
+          this.settings.port = list[0].device;
+        }
+      },
+      error: () => this.ports = []
+    });
+  }
 
   graph_seconds: number = 20;
   seconds: number = 60;
@@ -39,6 +57,10 @@ export class SidePanelComponent {
 
     if (!this.testName.trim()) {
       this.error = 'Please enter a test name.';
+      return;
+    }
+    if (!this.settings.port.trim()) {
+      this.error = 'Please enter the Arduino port.';
       return;
     }
 

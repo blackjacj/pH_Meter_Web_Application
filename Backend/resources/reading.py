@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 
 from db import db
+from serial.tools import list_ports
 from models import ReadingModel, TestModel
 from schemas import ReadingSchema, PlainReadingSchema
 
@@ -49,6 +50,15 @@ def read_loop(app, test_id, port, seconds, stop_event):
         if ser:
             ser.close()
         running.pop(test_id, None)
+
+@blp.route("/ports")
+class Ports(MethodView):
+    @jwt_required()
+    def get(self):
+        return [
+            {"device": p.device, "description": p.description}
+            for p in list_ports.comports()
+        ]
 
 @blp.route("/test/<int:test_id>/readings")
 class TestReadings(MethodView):

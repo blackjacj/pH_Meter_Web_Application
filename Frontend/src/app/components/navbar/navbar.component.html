@@ -8,8 +8,13 @@
 
     <span class="example-spacer"></span>
 
-    <button mat-button routerLink="/login">Login</button>
-    <button mat-button routerLink="/tests">My Experiments</button>
-    <button mat-button routerLink="/info">Arduino Setup Instructions</button>
-    <button mat-button (click)="logout()">Logout</button>
+    @if (username) {
+        <span class="username">{{ username }}</span>
+        <button mat-button routerLink="/tests">My Experiments</button>
+        <button mat-button routerLink="/info">Arduino Setup Instructions</button>
+        <button mat-button (click)="logout()">Logout</button>
+    } @else {
+        <button mat-button routerLink="/login">Login</button>
+        <button mat-button routerLink="/info">Arduino Setup Instructions</button>
+    }
 </mat-toolbar>

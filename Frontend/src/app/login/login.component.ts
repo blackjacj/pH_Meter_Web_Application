@@ -1,4 +1,5 @@
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../services/auth.service';
 import { Component, inject } from '@angular/core';
 import { ReactiveFormsModule, Validators, FormGroup, FormControl } from '@angular/forms';
 import { RouterLink, Router } from '@angular/router';
@@ -13,6 +14,7 @@ import { RouterLink, Router } from '@angular/router';
 export class LoginComponent {
   private http = inject(HttpClient)
   private router = inject(Router)
+  private authS = inject(AuthService);
 
   loginForm: FormGroup = new FormGroup({
     username: new FormControl('', Validators.required),
@@ -31,9 +33,10 @@ export class LoginComponent {
     this.http.post<any>('http://127.0.0.1:5000/login', this.loginForm.value).subscribe({
       next: (res) => {
         localStorage.setItem('token', res.access_token);
+        localStorage.setItem('username', res.username);
+        this.authS.login(res.username);
         this.loading = false;
         this.router.navigate(['/'])
-        console.log('Logged in!');
       },
       error: (err) => {
         this.error = err.error?.message || 'Login failed';
