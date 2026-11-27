@@ -154,3 +154,41 @@ select:focus {
   border-color: #3B82F6;
   box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
+
+.time-field {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.field-title {
+  font-size: 14pt;
+  font-weight: 500;
+  color: #0F172A;
+}
+
+.time-inputs {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.time-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 0;
+}
+
+.time-box label {
+  margin: 0;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.time-box input[type="number"] {
+  width: 100%;
+  padding: 10px 8px;
+  text-align: center;
+}

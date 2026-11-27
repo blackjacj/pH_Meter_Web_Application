@@ -36,7 +36,10 @@ export class SidePanelComponent implements OnInit{
   }
 
   graph_seconds: number = 20;
-  seconds: number = 60;
+  hours: number = 0;
+  minutes: number = 0;
+  seconds: number = 30;
+  totalSeconds: number = 0;
   testName: string = '';
   testNote: string = '';
   error: string = '';
@@ -47,8 +50,12 @@ export class SidePanelComponent implements OnInit{
     }
   }
 
-  setSeconds(s: number) {
-    this.settings.testSeconds = s;
+  setSeconds(hours: number, minutes: number, seconds: number) {
+    this.totalSeconds = Math.floor((hours || 0) * 3600 + (minutes || 0) * 60 + (seconds || 0));
+    if (this.totalSeconds > 0) {
+      this.settings.testSeconds = this.totalSeconds;
+    };
+    console.log(this.settings.testSeconds);
   }
 
   start_pressed = false;

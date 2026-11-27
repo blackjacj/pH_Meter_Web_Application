@@ -17,20 +17,30 @@
       @for (p of ports; track p.device) {
         <option [value]="p.device">{{ p.device }} ({{ p.description }})</option>
       } @empty {
-        <option [value]="settings.port">No Arduino found</option>
+        <option [value]="settings.port">No Ports Found</option>
       }
     </select>
     <button (click)="loadPorts()" [disabled]="settings.startButtonPressed">Refresh</button>
   </div>
-  <div class="field">
-    <label for="test_length">Test length (seconds)</label>
-    <input type="number" id="test_length" [(ngModel)]="seconds" placeholder="e.g. 60">
-    <button (click)="setSeconds(seconds)">Apply</button>
-  </div>
-  <div class="field">
-    <label for="graph_seconds">Seconds shown on graph</label>
-    <input id="graph_seconds" type="number" [(ngModel)]="graph_seconds" placeholder="Displayed seconds on graph">
-    <button (click)="setPoint(graph_seconds)">Apply</button>
+  <div class="field time-field">
+    <span class="field-title">Test length</span>
+
+    <div class="time-inputs">
+      <div class="time-box">
+        <label for="test_length_hours">Hours</label>
+        <input id="test_length_hours" type="number" min="0" [(ngModel)]="hours">
+      </div>
+      <div class="time-box">
+        <label for="test_length_minutes">Minutes</label>
+        <input id="test_length_minutes" type="number" min="0" [(ngModel)]="minutes">
+      </div>
+      <div class="time-box">
+        <label for="test_length_seconds">Seconds</label>
+        <input id="test_length_seconds" type="number" min="0" [(ngModel)]="seconds">
+      </div>
+    </div>
+
+    <button (click)="setSeconds(hours, minutes, seconds)">Apply</button>
   </div>
 </section>
 

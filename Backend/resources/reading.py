@@ -28,7 +28,7 @@ def read_loop(app, test_id, port, seconds, stop_event):
                     for m in meters
                 ]
             else:
-                lines = ser.readline().decode(errors="ignore").strip()
+                lines = [ser.readline().decode(errors="ignore").strip()]
 
             elapsed = int(time.time() - start)
             if elapsed >= seconds:

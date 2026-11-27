@@ -6,7 +6,7 @@ import { Subject } from 'rxjs';
 })
 export class GraphSettingsService {
   maxPoints = 20;
-  testSeconds = 60;
+  testSeconds = 30;
   startButtonPressed = false;
   stopButtonPressed = false;
   resetSignal = new Subject<void>();
