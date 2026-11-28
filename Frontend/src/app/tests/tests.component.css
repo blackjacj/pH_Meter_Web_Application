@@ -32,3 +32,54 @@
 .error {
   color: #b91c1c;
 }
+
+.custom-btn {
+  background-color: #3B82F6;
+  color: #FFFFFF;
+  height: auto;
+  padding: 0 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-btn:hover {
+  background-color: #2563EB;
+}
+
+.custom-btn:active {
+  transform: scale(0.98);
+}
+
+.custom-btn-clear {
+  background-color: rgb(235, 100, 100);
+  color: #FFFFFF;
+  height: auto;
+  padding: 0 24px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-btn-clear:hover {
+  background-color: rgb(233, 47, 47);
+}
+
+.custom-btn-clear:active {
+  transform: scale(0.98);
+}
+
+.date-filter-group {
+  display: inline-flex;
+  align-items: stretch;
+  gap: 8px;
+  padding-bottom: 2rem;
+}

@@ -9,17 +9,31 @@
     <p class="message error">{{ error }}</p>
   }
 
+  @if (!loading && !error) {
+    <div class="date-filter-group">
+      <mat-form-field subscriptSizing="dynamic">
+        <mat-label>Choose a date</mat-label>
+        <input matInput [matDatepicker]="picker" [formControl]="dateControl">
+        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <button mat-flat-button class="custom-btn" (click)="filterResults()">Apply</button>
+      <button mat-flat-button class="custom-btn-clear" (click)="clearDate()">Clear Date</button>
+    </div>
+  }
+
   <section class="test-list">
-    @for (test of tests; track test.id) {
-      <article [routerLink]="['/test-detail', test.id]", class="test-card">
+    @for (test of filteredTests; track test.id) {
+      <article [routerLink]="['/test-detail', test.id]" class="test-card">
         <h2>{{ test.name }}</h2>
         <p class="note">{{ test.note || 'No note' }}</p>
         <small>{{ test.date | date: 'medium' }}</small>
       </article>
     } @empty {
       @if (!loading && !error) {
-        <p>You have no tests yet.</p>
+        <p>{{ tests.length ? 'No tests on that date.' : 'You have no tests yet.' }}</p>
       }
-    }
+    }  
   </section>
 </main>
